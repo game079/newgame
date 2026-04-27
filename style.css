@@ -1,0 +1,173 @@
+/* --- 全体の基本設定 --- */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f2f5;
+    color: #1c1e21;
+}
+
+/* --- メインタイトル（金ぴか・発光） --- */
+.gold-title {
+    color: #FFD700 !important;
+    text-shadow: 
+        0px 0px 10px rgba(255, 215, 0, 0.8),
+        0px 0px 20px rgba(255, 215, 0, 0.5),
+        2px 2px 4px rgba(0,0,0,0.4);
+    font-size: 70px;
+    margin-bottom: 40px;
+    filter: brightness(1.2);
+    letter-spacing: 4px;
+}
+
+/* --- 画面切り替え設定 --- */
+.screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.active {
+    display: flex;
+}
+
+/* --- タイトル画面のメインボタン --- */
+.main-btn {
+    width: 280px;
+    padding: 22px;
+    font-size: 26px;
+    margin: 12px;
+    cursor: pointer;
+    border: none;
+    border-radius: 15px;
+    font-weight: bold;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.btn-blue { background: linear-gradient(135deg, #2196f3, #1976d2); color: white; }
+.btn-red { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
+
+.main-btn:hover {
+    transform: translateY(-8px) scale(1.02);
+    filter: brightness(1.15);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+}
+
+/* --- レベル選択画面のモード名（白抜き・背景塗りつぶし） --- */
+#level-mode-title {
+    font-size: 32px;
+    margin-bottom: 30px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    padding: 12px 45px;
+    border-radius: 50px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    display: inline-block;
+}
+
+.mode-normal { background: linear-gradient(135deg, #2196f3, #1976d2); }
+.mode-hard { background: linear-gradient(135deg, #f44336, #d32f2f); }
+
+/* --- レベル選択ボタンのグリッド --- */
+.lv-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    max-width: 550px;
+    margin-top: 10px;
+    padding: 20px;
+}
+
+.lv-btn {
+    width: 85px;
+    height: 85px;
+    border-radius: 18px;
+    border: 3px solid #FFD700; 
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+    background: white;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4b4f56;
+}
+
+.lv-btn:hover {
+    transform: scale(1.15) rotate(2deg);
+    background: #fffdf0; 
+    color: #b8860b;
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.5);
+}
+
+/* --- ゲーム中の情報パネル --- */
+.info-panel {
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #4b4f56;
+    background: white;
+    padding: 10px 30px;
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* --- ゲーム盤 --- */
+#game-board {
+    position: relative;
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    margin-top: 20px;
+}
+
+/* --- 数字ボタン（淡い水色＋金枠） --- */
+.number-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1c1e21;
+    font-weight: bold;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #f0f8ff, #bbdefb);
+    transition: all 0.2s ease;
+}
+
+.number-btn:hover {
+    background: linear-gradient(135deg, #fffdf0, #fff9c4);
+    border-color: #ffd700;
+    transform: scale(1.08);
+}
+
+.number-btn:active { transform: scale(0.9) !important; }
+.number-btn.clicked { visibility: hidden; }
+
+/* --- その他装飾・フッター --- */
+.back-btn {
+    margin-top: 40px;
+    color: #8a8d91;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.back-btn:hover { color: #1c1e21; text-decoration: underline; }
+.u-line { text-decoration: underline; text-underline-offset: 3px; }
+
+.footer-link { margin-top: 50px; }
+.footer-link a { color: #65676b; font-size: 12px; text-decoration: none; }

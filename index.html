@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEQUENCE</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="screen-title" class="screen active">
+        <h1 class="gold-title">SEQUENCE</h1>
+        <button class="main-btn btn-blue" onclick="showLevels('NORMAL')">NORMAL MODE</button>
+        <button class="main-btn btn-red" onclick="showLevels('HARD')">HARD MODE</button>
+    </div>
+
+    <div id="screen-level" class="screen">
+        <h2 id="level-mode-title">SELECT LEVEL</h2>
+        <div class="lv-grid" id="lv-buttons"></div>
+        <div class="back-btn" onclick="toTitle()">タイトルへ戻る</div>
+    </div>
+
+    <div id="screen-game" class="screen">
+        <div class="info-panel">Time: <span id="timer">0.00</span>s</div>
+        <div id="game-board"></div>
+        <div class="back-btn" onclick="toTitle()">中断して戻る</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
