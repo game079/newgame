@@ -38,7 +38,6 @@ function setupBoard(numbers) {
     board.innerHTML = '';
     const cols = Math.ceil(Math.sqrt(numbers));
     
-    // モバイル対応のサイズ計算
     const boardWidth = Math.min(window.innerWidth - 60, 500);
     const btnSize = Math.floor((boardWidth - (cols * 12)) / cols);
     const finalSize = Math.max(Math.min(btnSize, 60), 40);
@@ -59,24 +58,24 @@ function setupBoard(numbers) {
         btn.style.fontSize = (finalSize * 0.45) + 'px';
         btn.style.position = 'relative';
 
-        // 6と9のアンダーバー（視認性確保）
         if ([6, 9, 66, 69].includes(num)) {
             btn.style.textDecoration = 'underline';
             btn.style.textUnderlineOffset = '3px';
         }
         btn.textContent = num;
 
-        // --- HARDモード：大幅な重なりと回転 ---
         if (gameMode === 'HARD') {
             const rot = Math.floor(Math.random() * 4) * 90;
-            // ズレ幅をボタンサイズの50%に拡大
             const off = finalSize * 0.5; 
             const offX = Math.random() * off * 2 - off;
             const offY = Math.random() * off * 2 - off;
             
             btn.style.transform = `rotate(${rot}deg) translate(${offX}px, ${offY}px)`;
-            // 重なり順（zIndex）をランダム化
-            btn.style.zIndex = Math.floor(Math.random() * 100);
+            
+            // --- 重なり順のロジック修正 ---
+            // zIndex を「最大数 - 自分の数字」にすることで、
+            // 若い数字（1, 2, 3...）ほど手前に、大きい数字ほど奥になります。
+            btn.style.zIndex = totalNumbers - num;
         }
 
         btn.onclick = () => {
