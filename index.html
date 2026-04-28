@@ -6,13 +6,14 @@
     <title>Number Touch - 瞬間視と脳トレの数字探しゲーム</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 画面全体でスクロールを許可する設定 */
+        /* スクロールを許可し、全体を整える */
         html, body {
             height: auto;
             min-height: 100%;
-            overflow-y: auto; /* 縦スクロールを強制的に有効化 */
+            overflow-y: auto; /* スクロールを有効化 */
             background: #1a1a1a;
             margin: 0;
+            -webkit-overflow-scrolling: touch; /* iOSでのスクロールを滑らかに */
         }
 
         .screen {
@@ -21,7 +22,7 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
-            min-height: 100vh; /* 最低でも画面いっぱいの高さを確保 */
+            min-height: 100vh;
         }
 
         .screen.active {
@@ -50,7 +51,7 @@
         }
 
         .footer-links {
-            margin-top: auto; /* 可能な限り下に配置 */
+            margin-top: auto;
             padding: 20px 0 40px 0;
             text-align: center;
             width: 100%;
@@ -60,6 +61,11 @@
             color: #888;
             font-size: 12px;
             text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            color: #ffcc00;
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -71,9 +77,9 @@
         
         <div class="info-box">
             <h2>遊び方・ルール</h2>
-            <p>1から順番に、画面上のすべての数字をタップしてクリアタイムを競うゲームです。瞬間的な判断力と集中力を養います。</p>
-            <p><strong>NORMAL:</strong> 基本の練習モードです。ミスによるペナルティはありません。</p>
-            <p><strong>HARD:</strong> 上級者向け。数字が重なり、回転し、配置がカオスになります。誤タップをすると<strong>タイムに0.5秒のペナルティ</strong>が加算されます。</p>
+            <p>1から順番に数字をタップしてクリアタイムを競います。瞬間的な判断力と周辺視野のトレーニングに最適です。</p>
+            <p><strong>NORMAL:</strong> 基本の練習モード。ペナルティなし。</p>
+            <p><strong>HARD:</strong> 数字が重なり、回転し、視認性が低下。誤タップで<strong>0.5秒のペナルティ</strong>加算。</p>
         </div>
 
         <div class="footer-links">
