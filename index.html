@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Number Touch - 瞬間視と脳トレの数字探しゲーム</title>
+    <title>Number Touch - 瞬間視・脳トレ数字探し</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* スクロールを許可し、全体を整える */
+        /* 将来の競合を防ぐためのベース調整 */
         html, body {
             height: auto;
             min-height: 100%;
-            overflow-y: auto; /* スクロールを有効化 */
+            overflow-y: auto;
             background: #1a1a1a;
             margin: 0;
-            -webkit-overflow-scrolling: touch; /* iOSでのスクロールを滑らかに */
+            -webkit-overflow-scrolling: touch;
         }
-
         .screen {
             display: none;
             flex-direction: column;
@@ -24,11 +23,10 @@
             box-sizing: border-box;
             min-height: 100vh;
         }
-
         .screen.active {
             display: flex;
         }
-
+        /* 審査対策用info-box */
         .info-box {
             margin: 20px auto;
             padding: 15px;
@@ -41,32 +39,24 @@
             line-height: 1.6;
             border: 1px solid #444;
         }
-
         .info-box h2 {
             font-size: 16px;
             color: #ffcc00;
             border-bottom: 1px solid #444;
-            margin-top: 0;
-            padding-bottom: 5px;
+            margin: 0 0 10px 0;
         }
-
         .footer-links {
             margin-top: auto;
             padding: 20px 0 40px 0;
             text-align: center;
             width: 100%;
         }
-
         .footer-links a, .footer-links span {
             color: #888;
             font-size: 12px;
             text-decoration: none;
         }
-        
-        .footer-links a:hover {
-            color: #ffcc00;
-            text-decoration: underline;
-        }
+        .footer-links a:hover { color: #ffcc00; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -77,9 +67,9 @@
         
         <div class="info-box">
             <h2>遊び方・ルール</h2>
-            <p>1から順番に数字をタップしてクリアタイムを競います。瞬間的な判断力と周辺視野のトレーニングに最適です。</p>
-            <p><strong>NORMAL:</strong> 基本の練習モード。ペナルティなし。</p>
-            <p><strong>HARD:</strong> 数字が重なり、回転し、視認性が低下。誤タップで<strong>0.5秒のペナルティ</strong>加算。</p>
+            <p>1から順に数字をタップする脳トレゲーム。瞬間的な視認力と集中力を高めます。</p>
+            <p><strong>NORMAL:</strong> ペナルティなし。基礎トレーニングに。</p>
+            <p><strong>HARD:</strong> 重なり、回転あり。ミス毎に<strong>0.5秒加算</strong>。</p>
         </div>
 
         <div class="footer-links">
@@ -115,7 +105,6 @@
             </div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>

@@ -2,16 +2,19 @@ let gameTimer, startTime, currentNumber, totalNumbers, gameMode, currentLevel;
 let penaltyCount = 0;
 const commonCounts = [0, 16, 20, 25, 30, 36, 42, 49, 56, 64, 72];
 
-// --- 音響システム（AudioContext） ---
+// --- 音響システム ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playTone(freq, type, duration) {
+    // ブラウザ制限対策：ユーザー操作時にコンテキストを再開
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
     gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-    // 指数減衰させて「ポフッ」とした柔らかい余韻を作る
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
@@ -20,17 +23,23 @@ function playTone(freq, type, duration) {
 }
 
 const sounds = {
-    // 【調整】柔らかく耳に馴染む「ド」の音
     click: () => playTone(523.25, 'sine', 0.08), 
-    // クリア時のファンファーレ
     clear: () => {
         playTone(523.25, 'sine', 0.2); 
         setTimeout(() => playTone(659.25, 'sine', 0.2), 100);
         setTimeout(() => playTone(783.99, 'sine', 0.4), 200);
     },
-    // ボタン選択時の軽い音
     select: () => playTone(440, 'triangle', 0.05)
 };
+
+// フィッシャー・イェーツのシャッフル（偏りを排除）
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
 
 function toTitle() {
     sounds.select();
@@ -44,7 +53,6 @@ function showLevels(mode) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-level').classList.add('active');
     document.getElementById('level-mode-title').textContent = mode + " MODE";
-    
     const container = document.getElementById('lv-buttons');
     container.innerHTML = '';
     for (let i = 1; i <= 10; i++) {
@@ -72,7 +80,6 @@ function setupBoard(numbers) {
     const board = document.getElementById('game-board');
     board.innerHTML = '';
     const cols = Math.ceil(Math.sqrt(numbers));
-    
     const boardWidth = Math.min(window.innerWidth - 60, 500);
     const btnSize = Math.floor((boardWidth - (cols * 12)) / cols);
     const finalSize = Math.max(Math.min(btnSize, 60), 40);
@@ -83,7 +90,8 @@ function setupBoard(numbers) {
     board.style.width = 'fit-content';
     board.style.margin = '0 auto';
 
-    const nums = Array.from({length: numbers}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+    let nums = Array.from({length: numbers}, (_, i) => i + 1);
+    nums = shuffle(nums);
 
     nums.forEach(num => {
         const btn = document.createElement('div');
@@ -92,21 +100,16 @@ function setupBoard(numbers) {
         btn.style.height = finalSize + 'px';
         btn.style.fontSize = (finalSize * 0.45) + 'px';
         btn.style.position = 'relative';
-
-        if ([6, 9, 66, 69].includes(num)) {
-            btn.style.textDecoration = 'underline';
-            btn.style.textUnderlineOffset = '3px';
-        }
+        if ([6, 9, 66, 69].includes(num)) btn.style.textDecoration = 'underline';
         btn.textContent = num;
 
         if (gameMode === 'HARD') {
             const rot = Math.floor(Math.random() * 4) * 90;
-            const off = finalSize * 0.5; 
-            const offX = Math.random() * off * 2 - off;
-            const offY = Math.random() * off * 2 - off;
-            
+            // HARDの重なり具合をレベルに応じて調整（Lvが高いほどカオスに）
+            const maxOffset = (finalSize * 0.3) + (currentLevel * 2);
+            const offX = Math.random() * maxOffset * 2 - maxOffset;
+            const offY = Math.random() * maxOffset * 2 - maxOffset;
             btn.style.transform = `rotate(${rot}deg) translate(${offX}px, ${offY}px)`;
-            // 若い数字を常に一番手前に表示
             btn.style.zIndex = totalNumbers - num;
         }
 
@@ -116,12 +119,9 @@ function setupBoard(numbers) {
                 if (currentNumber === 1) { startTime = Date.now(); startTimer(); }
                 btn.classList.add('clicked');
                 if (currentNumber++ >= totalNumbers) endGame();
-            } else if (!btn.classList.contains('clicked')) {
-                // HARDモード：音は鳴らさず、ペナルティとタイマー文字色変化のみ
-                if (gameMode === 'HARD') {
-                    penaltyCount++;
-                    showPenaltyEffect();
-                }
+            } else if (!btn.classList.contains('clicked') && gameMode === 'HARD') {
+                penaltyCount++;
+                showPenaltyEffect();
             }
         };
         board.appendChild(btn);
