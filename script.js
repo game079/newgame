@@ -2,6 +2,26 @@ let gameTimer, startTime, currentNumber, totalNumbers, gameMode, currentLevel;
 let penaltyCount = 0;
 let isPenaltyEffectActive = false;
 const commonCounts = [0, 16, 20, 25, 30, 36, 42, 49, 56, 64, 72];
+let storageAvailable = true;
+
+function getBestTime(key) {
+    if (!storageAvailable) return null;
+    try {
+        return localStorage.getItem(key);
+    } catch (error) {
+        storageAvailable = false;
+        return null;
+    }
+}
+
+function setBestTime(key, value) {
+    if (!storageAvailable) return;
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        storageAvailable = false;
+    }
+}
 
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
@@ -59,7 +79,7 @@ function showLevels(mode) {
         btn.className = 'lv-btn';
         
         // 保存されたベストタイムを読み込み
-        const best = localStorage.getItem(`best_${gameMode}_${i}`);
+        const best = getBestTime(`best_${gameMode}_${i}`);
         const bestDisplay = best ? `<br><span style="font-size:10px; color:#ffcc00;">Best: ${best}s</span>` : "";
         
         btn.innerHTML = `Lv ${i}${bestDisplay}`;
@@ -158,9 +178,9 @@ function endGame() {
     
     // ベストタイム保存ロジック
     const key = `best_${gameMode}_${currentLevel}`;
-    const prevBest = localStorage.getItem(key);
+    const prevBest = getBestTime(key);
     if (!prevBest || parseFloat(finalTime) < parseFloat(prevBest)) {
-        localStorage.setItem(key, finalTime);
+        setBestTime(key, finalTime);
     }
 
     document.getElementById('res-time').textContent = finalTime;
