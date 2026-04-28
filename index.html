@@ -6,7 +6,6 @@
     <title>Number Touch - 瞬間視・脳トレ数字探し</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 将来の競合を防ぐためのベース調整 */
         html, body {
             height: auto;
             min-height: 100%;
@@ -23,10 +22,11 @@
             box-sizing: border-box;
             min-height: 100vh;
         }
-        .screen.active {
-            display: flex;
-        }
-        /* 審査対策用info-box */
+        .screen.active { display: flex; }
+        
+        /* レベルボタン内のベストタイム表示用 */
+        .lv-btn { line-height: 1.2; padding: 10px 5px !important; }
+
         .info-box {
             margin: 20px auto;
             padding: 15px;
@@ -67,9 +67,9 @@
         
         <div class="info-box">
             <h2>遊び方・ルール</h2>
-            <p>1から順に数字をタップする脳トレゲーム。瞬間的な視認力と集中力を高めます。</p>
-            <p><strong>NORMAL:</strong> ペナルティなし。基礎トレーニングに。</p>
-            <p><strong>HARD:</strong> 重なり、回転あり。ミス毎に<strong>0.5秒加算</strong>。</p>
+            <p>1から順に数字をタップする脳トレゲーム。クリアタイムはブラウザに保存されます。</p>
+            <p><strong>NORMAL:</strong> 基本モード。まずはLv.10クリアを目指しましょう。</p>
+            <p><strong>HARD:</strong> 視覚妨害あり。ミス毎に<strong>0.5秒加算</strong>されるストイックなモード。</p>
         </div>
 
         <div class="footer-links">

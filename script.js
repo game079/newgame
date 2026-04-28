@@ -1,15 +1,12 @@
 let gameTimer, startTime, currentNumber, totalNumbers, gameMode, currentLevel;
 let penaltyCount = 0;
+let isPenaltyEffectActive = false;
 const commonCounts = [0, 16, 20, 25, 30, 36, 42, 49, 56, 64, 72];
 
-// --- 音響システム ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playTone(freq, type, duration) {
-    // ブラウザ制限対策：ユーザー操作時にコンテキストを再開
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = type;
@@ -32,7 +29,6 @@ const sounds = {
     select: () => playTone(440, 'triangle', 0.05)
 };
 
-// フィッシャー・イェーツのシャッフル（偏りを排除）
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -46,19 +42,27 @@ function toTitle() {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-title').classList.add('active');
     clearInterval(gameTimer);
+    isPenaltyEffectActive = false;
 }
 
 function showLevels(mode) {
     sounds.select();
+    gameMode = mode;
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-level').classList.add('active');
     document.getElementById('level-mode-title').textContent = mode + " MODE";
+    
     const container = document.getElementById('lv-buttons');
     container.innerHTML = '';
     for (let i = 1; i <= 10; i++) {
         const btn = document.createElement('button');
         btn.className = 'lv-btn';
-        btn.textContent = 'Lv ' + i;
+        
+        // 保存されたベストタイムを読み込み
+        const best = localStorage.getItem(`best_${gameMode}_${i}`);
+        const bestDisplay = best ? `<br><span style="font-size:10px; color:#ffcc00;">Best: ${best}s</span>` : "";
+        
+        btn.innerHTML = `Lv ${i}${bestDisplay}`;
         btn.onclick = () => { currentLevel = i; startLevel(mode, i); };
         container.appendChild(btn);
     }
@@ -70,9 +74,11 @@ function startLevel(mode, level) {
     totalNumbers = commonCounts[level];
     currentNumber = 1;
     penaltyCount = 0;
+    isPenaltyEffectActive = false;
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-game').classList.add('active');
     document.getElementById('timer').textContent = '0.00';
+    document.getElementById('timer').style.color = '#ffcc00';
     setupBoard(totalNumbers);
 }
 
@@ -90,8 +96,7 @@ function setupBoard(numbers) {
     board.style.width = 'fit-content';
     board.style.margin = '0 auto';
 
-    let nums = Array.from({length: numbers}, (_, i) => i + 1);
-    nums = shuffle(nums);
+    let nums = shuffle(Array.from({length: numbers}, (_, i) => i + 1));
 
     nums.forEach(num => {
         const btn = document.createElement('div');
@@ -99,13 +104,11 @@ function setupBoard(numbers) {
         btn.style.width = finalSize + 'px';
         btn.style.height = finalSize + 'px';
         btn.style.fontSize = (finalSize * 0.45) + 'px';
-        btn.style.position = 'relative';
         if ([6, 9, 66, 69].includes(num)) btn.style.textDecoration = 'underline';
         btn.textContent = num;
 
         if (gameMode === 'HARD') {
             const rot = Math.floor(Math.random() * 4) * 90;
-            // HARDの重なり具合をレベルに応じて調整（Lvが高いほどカオスに）
             const maxOffset = (finalSize * 0.3) + (currentLevel * 2);
             const offX = Math.random() * maxOffset * 2 - maxOffset;
             const offY = Math.random() * maxOffset * 2 - maxOffset;
@@ -129,9 +132,14 @@ function setupBoard(numbers) {
 }
 
 function showPenaltyEffect() {
+    if (isPenaltyEffectActive) return;
+    isPenaltyEffectActive = true;
     const timerEl = document.getElementById('timer');
     timerEl.style.color = 'red';
-    setTimeout(() => { timerEl.style.color = '#ffcc00'; }, 200);
+    setTimeout(() => {
+        timerEl.style.color = '#ffcc00';
+        isPenaltyEffectActive = false;
+    }, 300);
 }
 
 function startTimer() {
@@ -146,7 +154,16 @@ function startTimer() {
 function endGame() {
     clearInterval(gameTimer);
     sounds.clear();
-    document.getElementById('res-time').textContent = document.getElementById('timer').textContent;
+    const finalTime = document.getElementById('timer').textContent;
+    
+    // ベストタイム保存ロジック
+    const key = `best_${gameMode}_${currentLevel}`;
+    const prevBest = localStorage.getItem(key);
+    if (!prevBest || parseFloat(finalTime) < parseFloat(prevBest)) {
+        localStorage.setItem(key, finalTime);
+    }
+
+    document.getElementById('res-time').textContent = finalTime;
     document.getElementById('res-lv').textContent = currentLevel;
     document.getElementById('screen-result').classList.add('active');
 }
