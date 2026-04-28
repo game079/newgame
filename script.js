@@ -2,14 +2,16 @@ let gameTimer, startTime, currentNumber, totalNumbers, gameMode, currentLevel;
 let penaltyCount = 0;
 const commonCounts = [0, 16, 20, 25, 30, 36, 42, 49, 56, 64, 72];
 
-// --- 音響システム ---
+// --- 音響システム（AudioContext） ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
 function playTone(freq, type, duration) {
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.type = type;
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
     gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    // 指数減衰させて「ポフッ」とした柔らかい余韻を作る
     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
     osc.connect(gain);
     gain.connect(audioCtx.destination);
@@ -18,13 +20,16 @@ function playTone(freq, type, duration) {
 }
 
 const sounds = {
-    click: () => playTone(880, 'sine', 0.1),      // 正解音のみ残す
-    clear: () => {                               // クリアファンファーレ
+    // 【調整】柔らかく耳に馴染む「ド」の音
+    click: () => playTone(523.25, 'sine', 0.08), 
+    // クリア時のファンファーレ
+    clear: () => {
         playTone(523.25, 'sine', 0.2); 
         setTimeout(() => playTone(659.25, 'sine', 0.2), 100);
         setTimeout(() => playTone(783.99, 'sine', 0.4), 200);
     },
-    select: () => playTone(440, 'triangle', 0.05) // メニュー選択
+    // ボタン選択時の軽い音
+    select: () => playTone(440, 'triangle', 0.05)
 };
 
 function toTitle() {
@@ -39,6 +44,7 @@ function showLevels(mode) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-level').classList.add('active');
     document.getElementById('level-mode-title').textContent = mode + " MODE";
+    
     const container = document.getElementById('lv-buttons');
     container.innerHTML = '';
     for (let i = 1; i <= 10; i++) {
@@ -66,6 +72,7 @@ function setupBoard(numbers) {
     const board = document.getElementById('game-board');
     board.innerHTML = '';
     const cols = Math.ceil(Math.sqrt(numbers));
+    
     const boardWidth = Math.min(window.innerWidth - 60, 500);
     const btnSize = Math.floor((boardWidth - (cols * 12)) / cols);
     const finalSize = Math.max(Math.min(btnSize, 60), 40);
@@ -85,7 +92,11 @@ function setupBoard(numbers) {
         btn.style.height = finalSize + 'px';
         btn.style.fontSize = (finalSize * 0.45) + 'px';
         btn.style.position = 'relative';
-        if ([6, 9, 66, 69].includes(num)) btn.style.textDecoration = 'underline';
+
+        if ([6, 9, 66, 69].includes(num)) {
+            btn.style.textDecoration = 'underline';
+            btn.style.textUnderlineOffset = '3px';
+        }
         btn.textContent = num;
 
         if (gameMode === 'HARD') {
@@ -93,19 +104,21 @@ function setupBoard(numbers) {
             const off = finalSize * 0.5; 
             const offX = Math.random() * off * 2 - off;
             const offY = Math.random() * off * 2 - off;
+            
             btn.style.transform = `rotate(${rot}deg) translate(${offX}px, ${offY}px)`;
+            // 若い数字を常に一番手前に表示
             btn.style.zIndex = totalNumbers - num;
         }
 
         btn.onpointerdown = (e) => {
             if (num === currentNumber) {
-                sounds.click(); // 正解時のみ鳴らす
+                sounds.click();
                 if (currentNumber === 1) { startTime = Date.now(); startTimer(); }
                 btn.classList.add('clicked');
                 if (currentNumber++ >= totalNumbers) endGame();
             } else if (!btn.classList.contains('clicked')) {
+                // HARDモード：音は鳴らさず、ペナルティとタイマー文字色変化のみ
                 if (gameMode === 'HARD') {
-                    // 音は鳴らさず、ペナルティ加算とタイマー色変化のみ実行
                     penaltyCount++;
                     showPenaltyEffect();
                 }
