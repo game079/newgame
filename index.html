@@ -3,14 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Touch the Numbers</title>
+    <title>Number Touch - 瞬間視と脳トレの数字探しゲーム</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* 審査対策用の説明エリアのスタイル */
+        .info-box {
+            margin-top: 40px;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 10px;
+            font-size: 14px;
+            text-align: left;
+            color: #ccc;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+        .info-box h2 {
+            font-size: 16px;
+            color: #ffcc00;
+            border-bottom: 1px solid #444;
+            margin-top: 0;
+            padding-bottom: 5px;
+        }
+        .footer-links {
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+        .footer-links a, .footer-links span {
+            color: #666;
+            font-size: 12px;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
     <div id="screen-title" class="screen active">
         <h1>Number Touch</h1>
         <button class="mode-btn" onclick="showLevels('NORMAL')">NORMAL</button>
         <button class="mode-btn" onclick="showLevels('HARD')">HARD</button>
+        
+        <div class="info-box">
+            <h2>遊び方・ルール</h2>
+            <p>1から順番に、表示されたすべての数字をタップしてクリアタイムを競います。瞬間的な判断力と周辺視野のトレーニングに最適です。</p>
+            <p><strong>NORMAL:</strong> 基本的な練習モードです。ミスによるペナルティはありません。</p>
+            <p><strong>HARD:</strong> 上級者向け。数字が重なり、回転し、視認性が低下します。また、誤タップをするとタイムに0.5秒のペナルティが加算されます。</p>
+        </div>
+
+        <div class="footer-links">
+            <a href="privacy.html">プライバシーポリシー</a>
+            <span style="margin: 0 10px;">|</span>
+            <span>Contact: taajdt@google.com</span>
+        </div>
     </div>
 
     <div id="screen-level" class="screen">
