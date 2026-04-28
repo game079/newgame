@@ -6,7 +6,28 @@
     <title>Number Touch - 瞬間視と脳トレの数字探しゲーム</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 審査対策：コンテンツ量を確保し、視認性を高めるスタイル */
+        /* 画面全体でスクロールを許可する設定 */
+        html, body {
+            height: auto;
+            min-height: 100%;
+            overflow-y: auto; /* 縦スクロールを強制的に有効化 */
+            background: #1a1a1a;
+            margin: 0;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            min-height: 100vh; /* 最低でも画面いっぱいの高さを確保 */
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
         .info-box {
             margin: 20px auto;
             padding: 15px;
@@ -19,6 +40,7 @@
             line-height: 1.6;
             border: 1px solid #444;
         }
+
         .info-box h2 {
             font-size: 16px;
             color: #ffcc00;
@@ -26,19 +48,18 @@
             margin-top: 0;
             padding-bottom: 5px;
         }
+
         .footer-links {
-            margin-top: 20px;
-            padding-bottom: 40px; /* スクロールで見切れないよう余白を確保 */
+            margin-top: auto; /* 可能な限り下に配置 */
+            padding: 20px 0 40px 0;
             text-align: center;
+            width: 100%;
         }
+
         .footer-links a, .footer-links span {
             color: #888;
             font-size: 12px;
             text-decoration: none;
-        }
-        .footer-links a:hover {
-            text-decoration: underline;
-            color: #ffcc00;
         }
     </style>
 </head>
