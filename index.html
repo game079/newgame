@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Number Touch - 瞬間視・脳トレ数字探し</title>
+
+    <meta name="google-adsense-account" content="ca-pub-9056811366925666">
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9056811366925666"
+     crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="style.css">
     <style>
         html, body {
@@ -23,10 +29,8 @@
             min-height: 100vh;
         }
         .screen.active { display: flex; }
-        
-        /* レベルボタン内のベストタイム表示用 */
         .lv-btn { line-height: 1.2; padding: 10px 5px !important; }
-
+        
         .info-box {
             margin: 20px auto;
             padding: 15px;
@@ -38,12 +42,14 @@
             max-width: 400px;
             line-height: 1.6;
             border: 1px solid #444;
+            cursor: pointer;
+            transition: background 0.3s;
         }
+        .info-box:hover { background: #333; }
         .info-box h2 {
             font-size: 16px;
             color: #ffcc00;
-            border-bottom: 1px solid #444;
-            margin: 0 0 10px 0;
+            margin: 0;
         }
         .footer-links {
             margin-top: auto;
@@ -65,11 +71,25 @@
         <button class="mode-btn" onclick="showLevels('NORMAL')">NORMAL</button>
         <button class="mode-btn" onclick="showLevels('HARD')">HARD</button>
         
-        <div class="info-box">
-            <h2>遊び方・ルール</h2>
-            <p>1から順に数字をタップする脳トレゲーム。クリアタイムはブラウザに保存されます。</p>
-            <p><strong>NORMAL:</strong> 基本モード。まずはLv.10クリアを目指しましょう。</p>
-            <p><strong>HARD:</strong> 視覚妨害あり。ミス毎に<strong>0.5秒加算</strong>されるストイックなモード。</p>
+        <div class="info-box" id="info-box" onclick="toggleLanguage()">
+            <div id="info-ja">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; margin-bottom: 10px; padding-bottom: 5px;">
+                    <h2>遊び方・ルール</h2>
+                    <span style="font-size: 10px; color: #ffcc00; font-weight: bold;">JAPANESE / ENGLISH</span>
+                </div>
+                <p>1から順に数字をタップする脳トレゲーム。クリアタイムはブラウザに保存されます。</p>
+                <p><strong>NORMAL:</strong> 基本モード。Lv.10クリアを目指しましょう。</p>
+                <p><strong>HARD:</strong> 視覚妨害あり。ミス毎に<strong>0.5秒加算</strong>。</p>
+            </div>
+            <div id="info-en" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; margin-bottom: 10px; padding-bottom: 5px;">
+                    <h2>How to Play</h2>
+                    <span style="font-size: 10px; color: #ffcc00; font-weight: bold;">日本語 / 英語</span>
+                </div>
+                <p>Tap numbers in order from 1. Your best times are saved in your browser.</p>
+                <p><strong>NORMAL:</strong> Standard mode. Try to clear Level 10!</p>
+                <p><strong>HARD:</strong> Visual chaos. <strong>+0.5s penalty</strong> for each mis-tap.</p>
+            </div>
         </div>
 
         <div class="footer-links">

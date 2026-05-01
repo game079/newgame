@@ -2,27 +2,8 @@ let gameTimer, startTime, currentNumber, totalNumbers, gameMode, currentLevel;
 let penaltyCount = 0;
 let isPenaltyEffectActive = false;
 const commonCounts = [0, 16, 20, 25, 30, 36, 42, 49, 56, 64, 72];
-let storageAvailable = true;
 
-function getBestTime(key) {
-    if (!storageAvailable) return null;
-    try {
-        return localStorage.getItem(key);
-    } catch (error) {
-        storageAvailable = false;
-        return null;
-    }
-}
-
-function setBestTime(key, value) {
-    if (!storageAvailable) return;
-    try {
-        localStorage.setItem(key, value);
-    } catch (error) {
-        storageAvailable = false;
-    }
-}
-
+// --- 音響システム ---
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
 function playTone(freq, type, duration) {
@@ -49,6 +30,21 @@ const sounds = {
     select: () => playTone(440, 'triangle', 0.05)
 };
 
+// --- 言語切り替えロジック ---
+function toggleLanguage() {
+    const ja = document.getElementById('info-ja');
+    const en = document.getElementById('info-en');
+    if (ja.style.display === 'none') {
+        ja.style.display = 'block';
+        en.style.display = 'none';
+    } else {
+        ja.style.display = 'none';
+        en.style.display = 'block';
+    }
+    sounds.select();
+}
+
+// --- ゲームロジック ---
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -78,10 +74,12 @@ function showLevels(mode) {
         const btn = document.createElement('button');
         btn.className = 'lv-btn';
         
-        // 保存されたベストタイムを読み込み
-        const best = getBestTime(`best_${gameMode}_${i}`);
-        const bestDisplay = best ? `<br><span style="font-size:10px; color:#ffcc00;">Best: ${best}s</span>` : "";
+        let best = null;
+        try {
+            best = localStorage.getItem(`best_${gameMode}_${i}`);
+        } catch (e) { console.warn("Storage unavailable"); }
         
+        const bestDisplay = best ? `<br><span style="font-size:10px; color:#ffcc00;">Best: ${best}s</span>` : "";
         btn.innerHTML = `Lv ${i}${bestDisplay}`;
         btn.onclick = () => { currentLevel = i; startLevel(mode, i); };
         container.appendChild(btn);
@@ -176,12 +174,13 @@ function endGame() {
     sounds.clear();
     const finalTime = document.getElementById('timer').textContent;
     
-    // ベストタイム保存ロジック
-    const key = `best_${gameMode}_${currentLevel}`;
-    const prevBest = getBestTime(key);
-    if (!prevBest || parseFloat(finalTime) < parseFloat(prevBest)) {
-        setBestTime(key, finalTime);
-    }
+    try {
+        const key = `best_${gameMode}_${currentLevel}`;
+        const prevBest = localStorage.getItem(key);
+        if (!prevBest || parseFloat(finalTime) < parseFloat(prevBest)) {
+            localStorage.setItem(key, finalTime);
+        }
+    } catch (e) { console.warn("Storage failed"); }
 
     document.getElementById('res-time').textContent = finalTime;
     document.getElementById('res-lv').textContent = currentLevel;
